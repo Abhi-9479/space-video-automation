@@ -33,7 +33,7 @@ jobs:
     - name: 📦 Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y imagemagick ffmpeg
+        sudo apt-get install -y imagemagick ffmpeg libjpeg-dev zlib1g-dev
         # Configure ImageMagick policy for video processing
         sudo sed -i 's/rights="none"/rights="read,write"/g' /etc/ImageMagick-6/policy.xml
     
