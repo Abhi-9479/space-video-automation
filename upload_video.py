@@ -73,7 +73,7 @@ def upload_video(youtube_service, file_path, title, description, tags, privacy_s
             'title': title,
             'description': description,
             'tags': tags,
-            'categoryId': '22'  # '22' is "People & Blogs", suitable for motivation
+            'categoryId': '28'  # '22' is "People & Blogs", suitable for motivation
         },
         'status': {
             'privacyStatus': privacy_status,
