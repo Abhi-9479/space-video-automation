@@ -296,36 +296,73 @@ def log_to_sheet(part1: str, part2: str, title: str, filename: str, status: str)
 # --- MAIN EXECUTION BLOCK ---
 
 # --- MAIN EXECUTION BLOCK ---
-# --- MAIN EXECUTION BLOCK ---
 if __name__ == "__main__":
     print("\n🚀 --- AI YouTube Shorts Factory ---")
-    
-    # Setup environment
+
+    # Setup environment for GitHub Actions or local use
     is_automated = setup_environment()
-    
-    # Verify media files exist
+
+    # Verify that essential media files exist before proceeding
     if not verify_media_files():
-        exit("❌ Cannot proceed without media files")
-    
-    # Get user choice (automated or manual)
+        exit("❌ Cannot proceed without media files. Halting execution.")
+
+    # Get user choice (automatically selects '2' for GitHub Actions)
     choice = get_user_choice()
-    
-    if choice == '1' or choice == '2':
-        # Your existing code logic continues here...
-        # (Keep everything else the same)
-        
-        # --- Stage 1: Write Quote ---
+
+    if choice in ['1', '2']:
+        # --- STAGE 1: GENERATING CONTENT ---
+        print("\n--- STAGE 1: GENERATING CONTENT ---")
         part1, part2, title = create_quote_content()
-        if part1 == "Error": 
-            if is_automated:
-                sys.exit(1)  # Exit with error for GitHub Actions
-            else:
-                exit("❌ Failed to generate content")
-            
-        print(f"\n📝 Generated Content:")
-        print(f"  Part 1: {part1}")
-        print(f"  Part 2: {part2}")  
-        print(f"  Title: {title}")
+        if part1 == "Error":
+            exit("❌ Failed to generate content from AI. Halting execution.")
+        print(f"✅ Content Generated: {title}")
+
+        # --- STAGE 2: GENERATING VIDEO ---
+        print("\n--- STAGE 2: GENERATING VIDEO ---")
+        # Create a unique filename to prevent conflicts
+        timestamp = int(time.time())
+        output_filename = f"quote_{timestamp}.mp4"
         
-        # Continue with your existing logic...
-        # (Rest of 
+        # Call the function to create the .mp4 file
+        generate_video_with_music(part1, part2, output_filename)
+
+        # --- STAGE 3: UPLOADING TO YOUTUBE (if choice is '2') ---
+        upload_status = "Generated Locally" # Default status for logging
+        if choice == '2':
+            print("\n--- STAGE 3: UPLOADING TO YOUTUBE ---")
+            try:
+                youtube = get_authenticated_service()
+                print("✅ YouTube Authentication Successful.")
+
+                # Create description and a robust set of tags
+                description = f"""{part1} {part2}\n\n#space #facts #shorts #astronomy #science #universe"""
+                base_tags = ["space", "facts", "shorts", "astronomy", "science", "universe", "nasa", "space exploration"]
+                ai_tags = generate_extra_tags(title, f"{part1} {part2}")
+                final_tags = list(set(base_tags + ai_tags)) # Combine and remove duplicates
+
+                print(f"🚀 Uploading '{output_filename}' to YouTube...")
+                # Call the function from upload_video.py
+                upload_video(
+                    youtube,
+                    file=output_filename,
+                    title=title,
+                    description=description,
+                    tags=final_tags,
+                    category="28",  # 28 is for "Science & Technology"
+                    privacy_status="public"
+                )
+                upload_status = "Uploaded to YouTube"
+                print("✅ Video Uploaded Successfully!")
+
+            except Exception as e:
+                print(f"❌ ERROR: YouTube upload failed. Details: {e}")
+                upload_status = f"YouTube Upload Failed: {e}"
+
+        # --- STAGE 4: LOGGING TO GOOGLE SHEETS ---
+        print("\n--- STAGE 4: LOGGING TO GOOGLE SHEETS ---")
+        log_to_sheet(part1, part2, title, output_filename, upload_status)
+
+        print("\n✅ --- All tasks completed. ---")
+
+    else:
+        print("❌ Invalid choice. Please run again and enter 1 or 2.")
