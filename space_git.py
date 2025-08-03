@@ -343,7 +343,6 @@ if __name__ == "__main__":
                     title=title,
                     description=description,
                     tags=final_tags,
-                    category="28",  # 28 is for "Science & Technology"
                     privacy_status="public"
                 )
                 upload_status = "Uploaded to YouTube"
