@@ -339,7 +339,7 @@ if __name__ == "__main__":
                 # Call the function from upload_video.py
                 upload_video(
                     youtube,
-                    file=output_filename,
+                    file_path=output_filename,
                     title=title,
                     description=description,
                     tags=final_tags,
