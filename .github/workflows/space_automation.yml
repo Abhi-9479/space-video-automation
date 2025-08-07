@@ -12,74 +12,101 @@ jobs:
   generate-space-video:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    
+
+    permissions:
+      contents: write
+      
     steps:
+    # Step 1: Checkout the repository code
     - name: 📥 Checkout repository
       uses: actions/checkout@v4
-      with:
-        lfs: true  # Important: This downloads Git LFS files
     
+    # Step 2: Download all media files from the GitHub Release using the PAT
+    - name: 📥 Download Media Assets from Release
+      run: |
+        echo "Creating media directories..."
+        mkdir -p space_temp
+        mkdir -p space_music
+
+        echo "Downloading video templates..."
+        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/Asteroids.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/Asteroids.mp4"
+        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/blackholes.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/blackholes.mp4"
+        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/solar_system.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/solar_system.mp4"
+        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/space_blackholes.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_blackholes.mp4"
+        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/space_earth.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_earth.mp4"
+        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/space_moon.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_moon.mp4"
+        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/space_multisky.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_multisky.mp4"
+        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/space_nebula.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_nebula.mp4"
+        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/space_newearth.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_newearth.mp4"
+        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/space_planetx_to_earth.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_planetx_to_earth.mp4"
+        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/space_polkadots.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_polkadots.mp4"
+        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/space_purp_asteroids.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_purp_asteroids.mp4"
+        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/space_red_planet.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_red_planet.mp4"
+        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/space_star.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_star.mp4"
+
+        echo "Downloading music files..."
+        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_music/best.15.second.in.interstellar.mp3" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/best.15.second.in.interstellar.mp3"
+        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_music/East.West_space.mp3" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/East.West_space.mp3"
+        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_music/Interstellar.Mood_space.mp3" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/Interstellar.Mood_space.mp3"
+        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_music/Seventh.Heaven_space.mp3" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/Seventh.Heaven_space.mp3"
+        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_music/Y2K.Heist.-.Rod.Kim.mp3" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/Y2K.Heist.-.Rod.Kim.mp3"
+
+    # Step 3: Set up Python
     - name: 🐍 Set up Python 3.12.10
       uses: actions/setup-python@v4
       with:
         python-version: '3.12.10'
     
-    - name: 🔍 Verify Python version
-      run: |
-        python --version
-        python -c "import sys; print(f'Python version: {sys.version}')"
-        pip --version
-    
+    # Step 4: Install system dependencies
     - name: 📦 Install system dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y imagemagick ffmpeg libjpeg-dev zlib1g-dev
-        # Configure ImageMagick policy for video processing
         sudo sed -i 's/rights="none"/rights="read,write"/g' /etc/ImageMagick-6/policy.xml
     
+    # Step 5: Install Python dependencies
     - name: 🔧 Install Python dependencies
       run: |
         python -m pip install --upgrade pip setuptools wheel
         pip install -r requirements.txt
-        # Verify installations
-        pip list
     
+    # Step 6: Create credential and environment files
     - name: 🔐 Create credentials files from secrets
       run: |
         echo '${{ secrets.GOOGLE_CREDENTIALS }}' > credentials.json
         echo '${{ secrets.CLIENT_SECRETS }}' > client_secrets.json
         echo '${{ secrets.TOKEN_PICKLE_BASE64 }}' | base64 -d > token.pickle
-    
     - name: 🌍 Create environment file
       run: |
         echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" > .env
     
-    - name: 📁 Verify media files
-      run: |
-        echo "📊 Media files verification:"
-        echo "Space music files:"
-        ls -la space_music/ | head -10
-        echo "Space template videos:"  
-        ls -la space_temp/ | head -10
-        echo "Total music files: $(find space_music -name '*.mp3' | wc -l)"
-        echo "Total video files: $(find space_temp -name '*.mp4' | wc -l)"
-    
+    # Step 7: Run your main Python script
     - name: 🚀 Generate and upload space video
       run: |
-        python --version
         python space_git.py
       env:
         GITHUB_ACTIONS: true
         PYTHONPATH: ${{ github.workspace }}
-    
+
+    # Step 8: Commit the updated index file back to the repository
+    - name: 💾 Commit and push last video index
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add space_temp/last_video_index.txt
+        git diff-index --quiet HEAD || git commit -m "Update last used video index"
+        git push
+        
+    # Step 9: Save the final video as a temporary artifact
     - name: 💾 Save generated video as artifact (optional backup)
-      if: always()  # Run even if upload fails
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: space-video-${{ github.run_number }}
         path: "quote_*.mp4"
         retention-days: 7
     
+    # Step 10: Notify on failure
     - name: 📧 Notify on failure
       if: failure()
       run: |
