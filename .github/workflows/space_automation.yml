@@ -61,11 +61,11 @@ jobs:
         download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_star.mp4" "space_temp/space_star.mp4"
 
         echo "Downloading music files..."
-        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/best.15.second.in.interstellar.mp3" "space_music/best.15.second.in.interstellar.mp3"
-        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/East.West_space.mp3" "space_music/East.West_space.mp3"
-        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/Interstellar.Mood_space.mp3" "space_music/Interstellar.Mood_space.mp3"
-        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/Seventh.Heaven_space.mp3" "space_music/Seventh.Heaven_space.mp3"
-        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/Y2K.Heist.-.Rod.Kim.mp3" "space_music/Y2K.Heist.-.Rod.Kim.mp3"
+        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/interstellar_15.mp3" "space_music/interstellar_15.mp3"
+        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/East_West_space.mp3" "space_music/East_West_space.mp3"
+        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/Interstellar_Mood_space.mp3" "space_music/Interstellar_Mood_space.mp3"
+        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/Seventh_Heaven_space.mp3" "space_music/Seventh_Heaven_space.mp3"
+        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/Y2K.mp3" "space_music/Y2K.mp3"
 
     # Step 3: Set up Python
     - name: 🐍 Set up Python 3.12.10
