@@ -21,35 +21,51 @@ jobs:
     - name: 📥 Checkout repository
       uses: actions/checkout@v4
     
-    # Step 2: Download all media files from the GitHub Release using the PAT
+    # Step 2: Download all media files from the GitHub Release with proper error handling
     - name: 📥 Download Media Assets from Release
+      env:
+        GITHUB_TOKEN: ${{ secrets.WORKFLOW_PAT }}
       run: |
         echo "Creating media directories..."
         mkdir -p space_temp
         mkdir -p space_music
 
+        # Function to download with error checking
+        download_file() {
+          local url="$1"
+          local output="$2"
+          echo "Downloading: $output"
+          
+          if curl -L --fail -H "Authorization: Bearer $GITHUB_TOKEN" -o "$output" "$url"; then
+            echo "✅ Successfully downloaded $output"
+          else
+            echo "❌ Failed to download $output"
+            exit 1
+          fi
+        }
+
         echo "Downloading video templates..."
-        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/Asteroids.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/Asteroids.mp4"
-        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/blackholes.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/blackholes.mp4"
-        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/solar_system.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/solar_system.mp4"
-        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/space_blackholes.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_blackholes.mp4"
-        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/space_earth.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_earth.mp4"
-        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/space_moon.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_moon.mp4"
-        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/space_multisky.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_multisky.mp4"
-        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/space_nebula.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_nebula.mp4"
-        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/space_newearth.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_newearth.mp4"
-        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/space_planetx_to_earth.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_planetx_to_earth.mp4"
-        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/space_polkadots.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_polkadots.mp4"
-        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/space_purp_asteroids.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_purp_asteroids.mp4"
-        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/space_red_planet.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_red_planet.mp4"
-        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_temp/space_star.mp4" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_star.mp4"
+        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/Asteroids.mp4" "space_temp/Asteroids.mp4"
+        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/blackholes.mp4" "space_temp/blackholes.mp4"
+        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/solar_system.mp4" "space_temp/solar_system.mp4"
+        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_blackholes.mp4" "space_temp/space_blackholes.mp4"
+        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_earth.mp4" "space_temp/space_earth.mp4"
+        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_moon.mp4" "space_temp/space_moon.mp4"
+        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_multisky.mp4" "space_temp/space_multisky.mp4"
+        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_nebula.mp4" "space_temp/space_nebula.mp4"
+        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_newearth.mp4" "space_temp/space_newearth.mp4"
+        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_planetx_to_earth.mp4" "space_temp/space_planetx_to_earth.mp4"
+        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_polkadots.mp4" "space_temp/space_polkadots.mp4"
+        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_purp_asteroids.mp4" "space_temp/space_purp_asteroids.mp4"
+        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_red_planet.mp4" "space_temp/space_red_planet.mp4"
+        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/space_star.mp4" "space_temp/space_star.mp4"
 
         echo "Downloading music files..."
-        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_music/best.15.second.in.interstellar.mp3" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/best.15.second.in.interstellar.mp3"
-        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_music/East.West_space.mp3" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/East.West_space.mp3"
-        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_music/Interstellar.Mood_space.mp3" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/Interstellar.Mood_space.mp3"
-        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_music/Seventh.Heaven_space.mp3" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/Seventh.Heaven_space.mp3"
-        curl -L -H "Authorization: Bearer ${{ secrets.WORKFLOW_PAT }}" -o "space_music/Y2K.Heist.-.Rod.Kim.mp3" "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/Y2K.Heist.-.Rod.Kim.mp3"
+        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/best.15.second.in.interstellar.mp3" "space_music/best.15.second.in.interstellar.mp3"
+        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/East.West_space.mp3" "space_music/East.West_space.mp3"
+        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/Interstellar.Mood_space.mp3" "space_music/Interstellar.Mood_space.mp3"
+        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/Seventh.Heaven_space.mp3" "space_music/Seventh.Heaven_space.mp3"
+        download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/Y2K.Heist.-.Rod.Kim.mp3" "space_music/Y2K.Heist.-.Rod.Kim.mp3"
 
     # Step 3: Set up Python
     - name: 🐍 Set up Python 3.12.10
