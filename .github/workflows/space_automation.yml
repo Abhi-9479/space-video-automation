@@ -21,14 +21,7 @@ jobs:
     - name: 📥 Checkout repository
       uses: actions/checkout@v4
     
-    # --- THIS IS THE NEW DEBUGGING STEP ---
-    # Step 2: Verify checked out files
-    - name: 🧐 Verify Checked Out Files
-      run: |
-        echo "Listing all files in the repository..."
-        ls -R
-
-    # Step 3: Download media from the release
+    # Step 2: Download media from the release
     - name: 📥 Download Media Assets from Release
       env:
         GITHUB_TOKEN: ${{ secrets.WORKFLOW_PAT }}
@@ -69,23 +62,23 @@ jobs:
         download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/Seventh_Heaven_space.mp3" "space_music/Seventh_Heaven_space.mp3"
         download_file "https://github.com/Abhi-9479/space-video-automation/releases/download/v1.0-assets/Y2K.mp3" "space_music/Y2K.mp3"
 
-    # Step 4: Set up Python
+    # Step 3: Set up Python
     - name: 🐍 Set up Python 3.12.10
       uses: actions/setup-python@v4
       with:
         python-version: '3.12.10'
     
-    # Step 5: Install Custom Fonts
+    # Step 4: Install Custom Fonts
     - name: 🔤 Install Custom Fonts
       run: |
         # Create a directory for the custom font
         sudo mkdir -p /usr/share/fonts/truetype/custom
         # Copy the font file from your repo into the system fonts directory
-        sudo cp fonts/ARLRDBD.ttf /usr/share/fonts/truetype/custom/
+        sudo cp fonts/ARLRDBD.TTF /usr/share/fonts/truetype/custom/
         # Rebuild the font cache to make the system aware of the new font
         sudo fc-cache -f -v
 
-    # Step 6: Install system dependencies
+    # Step 5: Install system dependencies
     - name: 📦 Install system dependencies
       run: |
         sudo apt-get update
